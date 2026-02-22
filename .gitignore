@@ -13,7 +13,7 @@ __pycache__/
 .env.*
 
 # Data & Models
-vectorstore/
+# vectorstore/ is now tracked to avoid Render startup timeouts
 *.sqlite3
 
 # IDEs
