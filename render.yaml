@@ -3,7 +3,7 @@ services:
     name: medical-rag-ai
     env: python
     buildCommand: "pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu"
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    startCommand: "gunicorn -w 1 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:$PORT --timeout 120"
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.19
