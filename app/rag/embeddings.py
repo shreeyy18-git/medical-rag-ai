@@ -1,30 +1,26 @@
 import os
-import sys
-import logging
-import warnings
 from dotenv import load_dotenv
-
-# Aggressively suppress HuggingFace/Transformers logs and warnings BEFORE importing them
-os.environ["TRANSFORMERS_VERBOSITY"] = "error"
-os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
-os.environ["SAFETENSORS_FAST_GPU"] = "1"
-logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
-logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
-warnings.filterwarnings("ignore", category=UserWarning)
-
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 
 load_dotenv()
 
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+HF_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 _embeddings_instance = None
 
-def get_embeddings() -> HuggingFaceEmbeddings:
+def get_embeddings() -> HuggingFaceInferenceAPIEmbeddings:
     """
-    Returns the HuggingFace embeddings model configured for the project (Singleton).
+    Returns the HuggingFace Inference API embeddings model (Singleton).
+    This avoids loading the model locally, saving significant memory.
     """
     global _embeddings_instance
     if _embeddings_instance is None:
-        _embeddings_instance = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+        if not HF_TOKEN:
+            raise ValueError("HUGGINGFACEHUB_API_TOKEN is not set in environment variables")
+            
+        _embeddings_instance = HuggingFaceInferenceAPIEmbeddings(
+            api_key=HF_TOKEN,
+            model_name=EMBEDDING_MODEL_NAME
+        )
     return _embeddings_instance
