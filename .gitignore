@@ -14,10 +14,6 @@ __pycache__/
 
 # Data & Models
 vectorstore/
-data/
-*.pdf
-*.csv
-*.xlsx
 *.sqlite3
 
 # IDEs
