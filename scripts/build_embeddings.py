@@ -18,7 +18,7 @@ from app.rag.embeddings import get_embeddings
 
 CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIRECTORY", "./vectorstore")
 
-def build_embeddings(pdf_path: str):
+def build_embeddings(pdf_path: str = "data/medical_book.pdf"):
     if not os.path.exists(pdf_path):
         print(f"Error: PDF file not found at {pdf_path}.")
         print("Please place your medical_book.pdf in the 'data' directory.")
