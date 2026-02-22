@@ -17,3 +17,8 @@ app.include_router(chat_router, prefix="/api")
 @app.get("/")
 def health_check():
     return {"status": "ok", "message": "Medical RAG AI is running"}
+
+@app.on_event("startup")
+def startup_event():
+    from scripts.build_embeddings import build_embeddings
+    build_embeddings()
