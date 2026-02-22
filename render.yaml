@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: medical-rag-ai
+    env: python
+    buildCommand: "pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.19
+      - key: GROQ_MODEL
+        value: llama-3.1-8b-instant
+      - key: EMBEDDING_MODEL
+        value: sentence-transformers/all-MiniLM-L6-v2
+      - key: CHROMA_PERSIST_DIRECTORY
+        value: ./vectorstore
+      - key: TEMPERATURE
+        value: "0.2"
+      - key: TOP_K
+        value: "3"
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
