@@ -16,7 +16,11 @@ async def chat_endpoint(request: ChatRequest):
     
     async def sse_generator():
         # 1. Send confidence score and metadata
-        meta_payload = json.dumps({"type": "metadata", "confidence": confidence})
+        meta_payload = json.dumps({
+            "type": "metadata", 
+            "confidence": confidence,
+            "user_id": request.user_id
+        })
         yield f"data: {meta_payload}\n\n"
         # 2. Generate full response by tracking the stream
         full_content = ""
@@ -24,7 +28,11 @@ async def chat_endpoint(request: ChatRequest):
             full_content += chunk
             
         # 3. Yield a single response containing the complete text
-        content_payload = json.dumps({"type": "content", "content": full_content})
+        content_payload = json.dumps({
+            "type": "content", 
+            "content": full_content,
+            "user_id": request.user_id
+        })
         yield f"data: {content_payload}\n\n"
                 
         # 4. Final completion event
